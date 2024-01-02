@@ -14,7 +14,9 @@
 
 package com.google.maps.android.compose
 
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -77,6 +79,15 @@ class BasicMapActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val builderVM = StrictMode.VmPolicy.Builder()
+            .penaltyDeath()
+            .apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    detectIncorrectContextUse()
+                }
+            }
+        StrictMode.setVmPolicy(builderVM.build())
+
         setContent {
             var isMapLoaded by remember { mutableStateOf(false) }
             // Observing and controlling the camera's state can be done with a CameraPositionState
